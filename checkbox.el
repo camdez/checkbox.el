@@ -26,28 +26,64 @@
 
 ;;; Commentary:
 
-;; Commentary coming soon!
+;; checkbox.el is a tiny library for working with textual checkboxes
+;; in Emacs buffers.  Use it to keep grocery lists in text files,
+;; feature requests in source files, or task lists on GitHub PRs.
 
-;; [x] Insert in a comment if we can't find a checkbox.
-;; [x] Make it work in Markdown / text mode.
-;; [x] With prefix arg, remove.
-;; [ ] Document.
-;; [ ] Consider making this active *only* for comments if in
-;;     programming mode.
-;; [ ] Would be nice if it could handle TODO as well.
-;; [ ] Consider the case where a list (-) is in a comment in a
-;;     programming mode (broken right now).
-;; [ ] Consider writing tests for this.
-;; [ ] If there's an active region, toggle checkboxes in region.
-;; [ ] Numeric prefix to jump to a specific state.
-;; [ ] If we have a comment with only a checkbox, maybe `'C-u M-x
-;;     checkbox/toggle' should kill the comment.
+;; For example, if you have a simple to-do list in a Markdown file
+;; like this:
+
+;;   - [ ] Buy gin<point>
+;;   - [ ] Buy tonic
+
+;; And you invoke `checkbox/toggle', you'll get the following:
+
+;;   - [x] Buy gin<point>
+;;   - [ ] Buy tonic
+
+;; Invoke it again and you're back to the original unchecked version.
+
+;;   - [ ] Buy gin<point>
+;;   - [ ] Buy tonic
+
+;; Next, if we add a line without a checkbox...
+
+;;   - [ ] Buy gin
+;;   - [ ] Buy tonic
+;;   - Buy limes<point>
+
+;; We can invoke the command again to insert a new checkbox.
+
+;;   - [ ] Buy gin
+;;   - [ ] Buy tonic
+;;   - [ ] Buy limes<point>
+
+;; If we want to remove a checkbox entirely we can do so by passing a
+;; prefix argument (`C-u') to `checkbox-toggle'.
+
+;; Finally, checkbox.el treats programming modes specially, wrapping
+;; inserted checkboxes in comments so we can quickly go from this:
+
+;;   (save-excursion
+;;     (beginning-of-line)<point>
+;;     (let ((beg (point)))
+
+;; To this:
+
+;;   (save-excursion
+;;     (beginning-of-line)                ; [ ] <point>
+;;     (let ((beg (point)))
 
 ;;; Code:
 
-(defun checkbox/toggle (&optional p)
+(defun checkbox/toggle (&optional arg)
+  "Toggle checkbox (\"[ ]\" or \"[x]\") on the current line.
+If checkbox does not exist, an empty checkbox will be inserted
+before the first word constituent.
+In programming modes, checkboxes will be inserted in comments.
+With prefix ARG, delete checkbox."
   (interactive "P")
-  (if p
+  (if arg
       (save-excursion
         (beginning-of-line)
         (when (re-search-forward "\\[[^]]\\]" (line-end-position) t)
