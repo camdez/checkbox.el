@@ -88,7 +88,9 @@ With prefix ARG, delete checkbox."
         (beginning-of-line)
         (when (re-search-forward "\\[[^]]\\]" (line-end-position) t)
           (delete-char -3)
-          (just-one-space)))
+          (if (looking-at "^")
+              (delete-horizontal-space)
+            (just-one-space))))
     (condition-case nil
         (save-excursion
           (beginning-of-line)
