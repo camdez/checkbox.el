@@ -1,5 +1,6 @@
-checkbox.el
-====
+# [checkbox.el][1]
+
+[![Build status][2]][3]
 
 A tiny library for working with textual checkboxes in Emacs buffers.
 Use it to keep grocery lists in text files, feature requests in source
@@ -98,4 +99,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 **Author:** Cameron Desautels \<<camdez@gmail.com>\>  
-**Source:** <http://github.com/camdez/checkbox.el>
+**Source:** <https://github.com/camdez/checkbox.el>
+
+[1]: https://github.com/camdez/checkbox.el
+[2]: https://travis-ci.org/camdez/checkbox.el.svg
+[3]: https://travis-ci.org/camdez/checkbox.el
