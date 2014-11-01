@@ -104,13 +104,30 @@ With prefix ARG, delete checkbox."
               (insert mark-char))))
       (search-failed
        (if (derived-mode-p 'prog-mode)
-           (comment-dwim nil)
-         (progn
+           (if (checkbox/comment-on-line-p)
+               (save-excursion
+                 (comment-dwim nil)
+                 (just-one-space)
+                 (insert "[ ]")
+                 (just-one-space))
+             (progn
+               (comment-dwim nil)
+               (unless (looking-at "^")
+                 (just-one-space))
+               (insert "[ ] ")))
+         (save-excursion
            (beginning-of-line)
-           (skip-syntax-forward "^w" (line-end-position))))
-       (unless (looking-at "^")
-         (just-one-space))
-       (insert "[ ] ")))))
+           (skip-syntax-forward "^w" (line-end-position))
+           (unless (looking-at "^")
+             (just-one-space))
+           (insert "[ ] ")))))))
+
+(defun checkbox/comment-on-line-p ()
+  "Return non-nil if there is a comment on the current line."
+  (save-excursion
+    (beginning-of-line)
+    (comment-normalize-vars)
+    (comment-search-forward (line-end-position) t)))
 
 (provide 'checkbox)
 ;;; checkbox.el ends here
