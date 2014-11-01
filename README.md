@@ -102,5 +102,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **Source:** <https://github.com/camdez/checkbox.el>
 
 [1]: https://github.com/camdez/checkbox.el
-[2]: https://travis-ci.org/camdez/checkbox.el.svg
+[2]: https://travis-ci.org/camdez/checkbox.el.svg?branch=master
 [3]: https://travis-ci.org/camdez/checkbox.el
