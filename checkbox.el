@@ -78,7 +78,15 @@
 
 (require 'cl-lib)
 
-(defvar checkbox/markers '("[ ]" "[x]"))
+(defgroup checkbox nil
+  "Quick manipulation of textual checkboxes."
+  :group 'convenience)
+
+(defcustom checkbox/markers '("[ ]" "[x]")
+  "Checkbox states to cycle between.
+First item will be the state for new checkboxes."
+  :group 'checkbox
+  :type '(repeat string))
 
 (defun checkbox/regexp ()
   "Return regexp matching all checkbox types."
