@@ -76,6 +76,26 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
+(defvar checkbox/prefix "[")
+(defvar checkbox/suffix "]")
+(defvar checkbox/markers '(" " "x"))
+
+(defun checkbox/regexp ()
+  "Return regexp matching all checkbox types."
+  (concat (regexp-quote checkbox/prefix)
+          (regexp-opt checkbox/markers t)
+          (regexp-quote checkbox/suffix)))
+
+(defun checkbox/next-marker (old-marker)
+  "Return the marker to cycle to after OLD-MARKER."
+  (let* ((old-marker-pos (cl-position old-marker checkbox/markers :test 'string=))
+         (new-marker-pos (if old-marker-pos
+                             (mod (1+ old-marker-pos) (length checkbox/markers))
+                           0)))
+    (nth new-marker-pos checkbox/markers)))
+
 (defun checkbox/toggle (&optional arg)
   "Toggle checkbox (\"[ ]\" or \"[x]\") on the current line.
 If checkbox does not exist, an empty checkbox will be inserted
@@ -88,14 +108,12 @@ With prefix ARG, delete checkbox."
     (condition-case nil
         (save-excursion
           (beginning-of-line)
-          (re-search-forward "\\[[^]]\\]" (line-end-position))
+          (re-search-forward (checkbox/regexp) (line-end-position))
           ;; Have checkbox, so toggle
-          (backward-char 2)
-          (let ((mark-char (if (looking-at "x")
-                               " "
-                             "x")))
-            (delete-char 1)
-            (insert mark-char)))
+          (let ((old-marker (buffer-substring (match-beginning 1) (match-end 1))))
+            (delete-region (match-beginning 1) (match-end 1))
+            (goto-char (match-beginning 1))
+            (insert (checkbox/next-marker old-marker))))
       (search-failed
        ;; No checkbox, so insert
        (if (derived-mode-p 'prog-mode)
@@ -117,16 +135,19 @@ With prefix ARG, delete checkbox."
   "Insert an unchecked checkbox at point."
   (unless (looking-at "^")
     (just-one-space))
-  (insert "[ ] "))
+  (insert (concat checkbox/prefix
+                  (car checkbox/markers)
+                  checkbox/suffix
+                  " ")))
 
 (defun checkbox/remove ()
   "Remove checkbox on line, if any."
   (interactive)
   (save-excursion
     (beginning-of-line)
-    (if (re-search-forward "\\[[^]]\\]" (line-end-position) t)
+    (if (re-search-forward (checkbox/regexp) (line-end-position) t)
         (progn
-          (delete-char -3)
+          (delete-region (match-beginning 0) (match-end 0))
           (if (looking-at "^")
               (delete-horizontal-space)
             (just-one-space)))
