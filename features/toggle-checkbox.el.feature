@@ -1,4 +1,4 @@
-Feature: Toggle checkbox
+Feature: Toggle checkbox on line
   Background:
     Given I switch to buffer "checkbox.txt"
     And I clear the buffer
