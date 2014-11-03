@@ -1,10 +1,11 @@
 Feature: Toggle checkbox on line in a programming mode
   Background:
     Given I switch to buffer "checkbox.el"
-    And I start an action chain
-    And I press "M-x"
-    And I type "emacs-lisp-mode"
-    And I execute the action chain
+    And I load the following:
+      """
+      (emacs-lisp-mode)
+      (setq indent-tabs-mode nil)
+      """
     And I clear the buffer
     And I insert:
       """
@@ -19,10 +20,10 @@ Feature: Toggle checkbox on line in a programming mode
   Scenario: Add checkbox
     When I go to word "1"
     And I press "C-c C-t"
-    # TODO Get "should see" matcher working. For some weird reason
-    # it's inserting tab characters, even when I turn indent-tabs-mode
-    # off.
-    Then I should see pattern "(setq foo 1)\s +; \[ \] "
+    Then I should see:
+      """
+      (setq foo 1)                            ; [ ] 
+      """
     And the cursor should be after "[ ] "
 
   Scenario: Check checkbox
