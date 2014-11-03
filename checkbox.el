@@ -90,13 +90,12 @@ With prefix ARG, delete checkbox."
           (beginning-of-line)
           (re-search-forward "\\[[^]]\\]" (line-end-position))
           ;; Have checkbox, so toggle
-          (progn
-            (backward-char 2)
-            (let ((mark-char (if (looking-at "x")
-                                 " "
-                               "x")))
-              (delete-char 1)
-              (insert mark-char))))
+          (backward-char 2)
+          (let ((mark-char (if (looking-at "x")
+                               " "
+                             "x")))
+            (delete-char 1)
+            (insert mark-char)))
       (search-failed
        ;; No checkbox, so insert
        (if (derived-mode-p 'prog-mode)
