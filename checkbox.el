@@ -84,6 +84,7 @@ In programming modes, checkboxes will be inserted in comments.
 With prefix ARG, delete checkbox."
   (interactive "P")
   (if arg
+      ;; Remove checkbox, if any
       (save-excursion
         (beginning-of-line)
         (when (re-search-forward "\\[[^]]\\]" (line-end-position) t)
@@ -95,6 +96,7 @@ With prefix ARG, delete checkbox."
         (save-excursion
           (beginning-of-line)
           (re-search-forward "\\[[^]]\\]" (line-end-position))
+          ;; Have checkbox, so toggle
           (progn
             (backward-char 2)
             (let ((mark-char (if (looking-at "x")
@@ -103,7 +105,9 @@ With prefix ARG, delete checkbox."
               (delete-char 1)
               (insert mark-char))))
       (search-failed
+       ;; No checkbox, so insert
        (if (derived-mode-p 'prog-mode)
+           ;; prog-mode, so checkbox should be in a commentq
            (if (checkbox/comment-on-line-p)
                (save-excursion
                  (comment-dwim nil)
@@ -115,6 +119,7 @@ With prefix ARG, delete checkbox."
                (unless (looking-at "^")
                  (just-one-space))
                (insert "[ ] ")))
+         ;; Non-prog-mode, simple case
          (save-excursion
            (beginning-of-line)
            (skip-syntax-forward "^w" (line-end-position))
