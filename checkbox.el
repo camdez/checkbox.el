@@ -84,16 +84,7 @@ In programming modes, checkboxes will be inserted in comments.
 With prefix ARG, delete checkbox."
   (interactive "P")
   (if arg
-      ;; Remove checkbox, if any
-      (save-excursion
-        (beginning-of-line)
-        (if (re-search-forward "\\[[^]]\\]" (line-end-position) t)
-          (progn
-            (delete-char -3)
-            (if (looking-at "^")
-                (delete-horizontal-space)
-              (just-one-space)))
-          (message "No comment on line")))
+      (checkbox/remove)
     (condition-case nil
         (save-excursion
           (beginning-of-line)
@@ -109,25 +100,38 @@ With prefix ARG, delete checkbox."
       (search-failed
        ;; No checkbox, so insert
        (if (derived-mode-p 'prog-mode)
-           ;; prog-mode, so checkbox should be in a commentq
+           ;; prog-mode, so checkbox should be in a comment
            (if (checkbox/comment-on-line-p)
                (save-excursion
                  (comment-dwim nil)
-                 (just-one-space)
-                 (insert "[ ]")
-                 (just-one-space))
+                 (checkbox/insert-at-point))
              (progn
                (comment-dwim nil)
-               (unless (looking-at "^")
-                 (just-one-space))
-               (insert "[ ] ")))
+               (checkbox/insert-at-point)))
          ;; Non-prog-mode, simple case
          (save-excursion
            (beginning-of-line)
            (skip-syntax-forward "^w" (line-end-position))
-           (unless (looking-at "^")
-             (just-one-space))
-           (insert "[ ] ")))))))
+           (checkbox/insert-at-point)))))))
+
+(defun checkbox/insert-at-point ()
+  "Insert an unchecked checkbox at point."
+  (unless (looking-at "^")
+    (just-one-space))
+  (insert "[ ] "))
+
+(defun checkbox/remove ()
+  "Remove checkbox on line, if any."
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (if (re-search-forward "\\[[^]]\\]" (line-end-position) t)
+        (progn
+          (delete-char -3)
+          (if (looking-at "^")
+              (delete-horizontal-space)
+            (just-one-space)))
+      (message "No comment on line"))))
 
 (defun checkbox/comment-on-line-p ()
   "Return non-nil if there is a comment on the current line."
