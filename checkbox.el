@@ -87,11 +87,13 @@ With prefix ARG, delete checkbox."
       ;; Remove checkbox, if any
       (save-excursion
         (beginning-of-line)
-        (when (re-search-forward "\\[[^]]\\]" (line-end-position) t)
-          (delete-char -3)
-          (if (looking-at "^")
-              (delete-horizontal-space)
-            (just-one-space))))
+        (if (re-search-forward "\\[[^]]\\]" (line-end-position) t)
+          (progn
+            (delete-char -3)
+            (if (looking-at "^")
+                (delete-horizontal-space)
+              (just-one-space)))
+          (message "No comment on line")))
     (condition-case nil
         (save-excursion
           (beginning-of-line)
