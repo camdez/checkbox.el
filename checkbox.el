@@ -78,15 +78,11 @@
 
 (require 'cl-lib)
 
-(defvar checkbox/prefix "[")
-(defvar checkbox/suffix "]")
-(defvar checkbox/markers '(" " "x"))
+(defvar checkbox/markers '("[ ]" "[x]"))
 
 (defun checkbox/regexp ()
   "Return regexp matching all checkbox types."
-  (concat (regexp-quote checkbox/prefix)
-          (regexp-opt checkbox/markers t)
-          (regexp-quote checkbox/suffix)))
+  (regexp-opt checkbox/markers))
 
 (defun checkbox/next-marker (old-marker)
   "Return the marker to cycle to after OLD-MARKER."
@@ -110,9 +106,8 @@ With prefix ARG, delete checkbox."
           (beginning-of-line)
           (re-search-forward (checkbox/regexp) (line-end-position))
           ;; Have checkbox, so toggle
-          (let ((old-marker (buffer-substring (match-beginning 1) (match-end 1))))
-            (delete-region (match-beginning 1) (match-end 1))
-            (goto-char (match-beginning 1))
+          (let ((old-marker (buffer-substring (match-beginning 0) (match-end 0))))
+            (delete-region (match-beginning 0) (match-end 0))
             (insert (checkbox/next-marker old-marker))))
       (search-failed
        ;; No checkbox, so insert
@@ -135,10 +130,7 @@ With prefix ARG, delete checkbox."
   "Insert an unchecked checkbox at point."
   (unless (looking-at "^")
     (just-one-space))
-  (insert (concat checkbox/prefix
-                  (car checkbox/markers)
-                  checkbox/suffix
-                  " ")))
+  (insert (concat (car checkbox/markers) " ")))
 
 (defun checkbox/remove ()
   "Remove checkbox on line, if any."
