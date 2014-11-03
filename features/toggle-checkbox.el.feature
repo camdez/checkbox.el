@@ -43,3 +43,14 @@ Feature: Toggle checkbox on line
       [ ] Line 3
       """
     And the cursor should be before "3"
+
+  Scenario: Remove checkbox
+    When I go to word "3"
+    And I press "C-u C-c C-t"
+    Then I should see:
+      """
+      Line 1
+      [ ] Line 2
+      Line 3
+      """
+    And the cursor should be before "3"

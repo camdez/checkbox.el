@@ -61,3 +61,15 @@ Feature: Toggle checkbox on line in a programming mode
       (setq qux 4)                            ; [ ] all the words
       """
     And the cursor should be before "4"
+
+  Scenario: Remove checkbox
+    When I go to word "2"
+    And I press "C-u C-c C-t"
+    Then I should see:
+      """
+      (setq foo 1)
+      (setq bar 2)                            ; words
+      (setq baz 3)                            ; [x] more words
+      (setq qux 4)                            ; all the words
+      """
+    And the cursor should be before "2"
