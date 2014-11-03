@@ -20,6 +20,7 @@ Feature: Toggle checkbox on line
       [ ] Line 2
       [x] Line 3
       """
+    And I should not see pattern "^ "
     And the cursor should be before "1"
 
   Scenario: Check checkbox
