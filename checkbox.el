@@ -88,8 +88,9 @@
           (regexp-opt checkbox/markers t)
           (regexp-quote checkbox/suffix)))
 
-(defun checkbox/next-marker (old-marker)
-  "Return the marker to cycle to after OLD-MARKER."
+(defun checkbox/next-marker (&optional old-marker)
+  "Return the marker to cycle to after OLD-MARKER.
+Zero-argument form returns marker to use for new checkboxes."
   (let* ((old-marker-pos (cl-position old-marker checkbox/markers :test 'string=))
          (new-marker-pos (if old-marker-pos
                              (mod (1+ old-marker-pos) (length checkbox/markers))
@@ -136,7 +137,7 @@ With prefix ARG, delete checkbox."
   (unless (looking-at "^")
     (just-one-space))
   (insert (concat checkbox/prefix
-                  (car checkbox/markers)
+                  (checkbox/next-marker)
                   checkbox/suffix
                   " ")))
 
