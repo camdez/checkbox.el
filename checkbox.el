@@ -77,6 +77,7 @@
 ;;; Code:
 
 (require 'cl-lib)
+(require 'subr-x)
 
 (defgroup checkbox nil
   "Quick manipulation of textual checkboxes."
@@ -160,8 +161,29 @@ Or, with MARKER, insert that marker at point."
     (just-one-space))
   (insert (or marker (checkbox/next-marker)) " "))
 
+(defun checkbox/comment-contents ()
+  "Return the contents of (first) comment on current line.
+NIL if no comment on line."
+  (save-excursion
+    (beginning-of-line)
+    (let ((comment-start (comment-search-forward (line-end-position) t))
+          (content-start (point)))
+      (when comment-start
+        (goto-char comment-start)
+        (comment-forward)
+        (comment-enter-backward)
+        (buffer-substring-no-properties content-start (point))))))
+
+(defun checkbox/kill-comment-if-blank ()
+  "Kill (first) comment on current line if only whitespace."
+  (let ((comment (checkbox/comment-contents)))
+    (when (and comment (string-blank-p comment))
+      (comment-kill 1))))
+
 (defun checkbox/remove ()
-  "Remove checkbox on line, if any."
+  "Remove checkbox on line, if any.
+If in a `prog-mode' derivative, prefer removing comment to
+leaving empty comment."
   (interactive)
   (save-excursion
     (beginning-of-line)
@@ -170,7 +192,9 @@ Or, with MARKER, insert that marker at point."
           (delete-region (match-beginning 0) (match-end 0))
           (if (looking-at "^")
               (delete-horizontal-space)
-            (just-one-space)))
+            (just-one-space))
+          (when (derived-mode-p 'prog-mode)
+            (checkbox/kill-comment-if-blank)))
       (message "No checkbox on line"))))
 
 (defun checkbox/comment-on-line-p ()

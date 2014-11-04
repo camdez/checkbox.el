@@ -13,6 +13,7 @@ Feature: Toggle checkbox on line in a programming mode
       (setq bar 2)                            ; [ ] words
       (setq baz 3)                            ; [x] more words
       (setq qux 4)                            ; all the words
+      (setq frob 5)                           ; [x]
       """
     And I go to beginning of buffer
     And I bind key "C-c C-t" to "checkbox/toggle"
@@ -73,3 +74,9 @@ Feature: Toggle checkbox on line in a programming mode
       (setq qux 4)                            ; all the words
       """
     And the cursor should be before "2"
+
+  Scenario: Remove comment with only checkbox
+    When I go to word "5"
+    And I press "C-u C-c C-t"
+    Then I should see pattern "^(setq frob 5)$"
+    And the cursor should be before "5"
