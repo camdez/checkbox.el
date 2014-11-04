@@ -77,7 +77,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'subr-x)
 
 (defgroup checkbox nil
   "Quick manipulation of textual checkboxes."
@@ -174,10 +173,14 @@ NIL if no comment on line."
         (comment-enter-backward)
         (buffer-substring-no-properties content-start (point))))))
 
+(defun checkbox/string-blank-p (str)
+  "True if STR consists of only whitespace (including newlines)."
+  (string-match-p "\\`[ \t\r\n]*\\'" str))
+
 (defun checkbox/kill-comment-if-blank ()
   "Kill (first) comment on current line if only whitespace."
   (let ((comment (checkbox/comment-contents)))
-    (when (and comment (string-blank-p comment))
+    (when (and comment (checkbox/string-blank-p comment))
       (comment-kill 1))))
 
 (defun checkbox/remove ()
