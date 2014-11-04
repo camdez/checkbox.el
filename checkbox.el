@@ -98,14 +98,23 @@ First item will be the state for new checkboxes."
   "Return regexp matching all checkbox types."
   (regexp-opt checkbox/markers))
 
+(defun checkbox/nth-marker (&optional idx wrap)
+  "Return the nth marker (or first without IDX).
+WRAP means module IDX by the number of markers rather than
+erroring."
+  (let* ((idx1 (or idx 0))
+         (idx2 (if wrap
+                   (mod idx1 (length checkbox/markers))
+                 idx1)))
+    (or (nth idx2 checkbox/markers)
+        (error "No such marker"))))
+
 (defun checkbox/next-marker (&optional old-marker)
   "Return the marker to cycle to after OLD-MARKER.
 Zero-argument form returns marker to use for new checkboxes."
   (let* ((old-marker-pos (cl-position old-marker checkbox/markers :test 'string=))
-         (new-marker-pos (if old-marker-pos
-                             (mod (1+ old-marker-pos) (length checkbox/markers))
-                           0)))
-    (nth new-marker-pos checkbox/markers)))
+         (new-marker-pos (when old-marker-pos (1+ old-marker-pos))))
+    (checkbox/nth-marker new-marker-pos t)))
 
 (defun checkbox/toggle (&optional arg)
   "Toggle checkbox (\"[ ]\" or \"[x]\") on the current line.
@@ -114,16 +123,18 @@ before the first word constituent.
 In programming modes, checkboxes will be inserted in comments.
 With prefix ARG, delete checkbox."
   (interactive "P")
-  (if arg
+  (if (consp arg)
       (checkbox/remove)
     (condition-case nil
         (save-excursion
           (beginning-of-line)
           (re-search-forward (checkbox/regexp) (line-end-position))
           ;; Have checkbox, so toggle
-          (let ((old-marker (buffer-substring (match-beginning 0) (match-end 0))))
+          (let ((new-marker (if arg
+                                (checkbox/nth-marker arg)
+                              (checkbox/next-marker (match-string 0)))))
             (delete-region (match-beginning 0) (match-end 0))
-            (insert (checkbox/next-marker old-marker))))
+            (insert new-marker)))
       (search-failed
        ;; No checkbox, so insert
        (if (derived-mode-p 'prog-mode)
@@ -131,21 +142,22 @@ With prefix ARG, delete checkbox."
            (if (checkbox/comment-on-line-p)
                (save-excursion
                  (comment-dwim nil)
-                 (checkbox/insert-at-point))
+                 (checkbox/insert-at-point arg))
              (progn
                (comment-dwim nil)
-               (checkbox/insert-at-point)))
+               (checkbox/insert-at-point arg)))
          ;; Non-prog-mode, simple case
          (save-excursion
            (beginning-of-line)
            (skip-syntax-forward "^w" (line-end-position))
-           (checkbox/insert-at-point)))))))
+           (checkbox/insert-at-point arg)))))))
 
-(defun checkbox/insert-at-point ()
-  "Insert an unchecked checkbox at point."
+(defun checkbox/insert-at-point (&optional marker-idx)
+  "Insert an unchecked checkbox at point.
+Or, with MARKER-IDX, insert nth marker."
   (unless (looking-at "^")
     (just-one-space))
-  (insert (concat (checkbox/next-marker) " ")))
+  (insert (checkbox/nth-marker marker-idx) " "))
 
 (defun checkbox/remove ()
   "Remove checkbox on line, if any."
