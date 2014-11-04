@@ -125,39 +125,40 @@ With prefix ARG, delete checkbox."
   (interactive "P")
   (if (consp arg)
       (checkbox/remove)
-    (condition-case nil
-        (save-excursion
-          (beginning-of-line)
-          (re-search-forward (checkbox/regexp) (line-end-position))
-          ;; Have checkbox, so toggle
-          (let ((new-marker (if arg
-                                (checkbox/nth-marker arg)
-                              (checkbox/next-marker (match-string 0)))))
-            (delete-region (match-beginning 0) (match-end 0))
-            (insert new-marker)))
-      (search-failed
-       ;; No checkbox, so insert
-       (if (derived-mode-p 'prog-mode)
-           ;; prog-mode, so checkbox should be in a comment
-           (if (checkbox/comment-on-line-p)
-               (save-excursion
+    ;; Look this up first so we don't move if invalid
+    (let ((fixed-marker (when arg (checkbox/nth-marker arg))))
+      (condition-case nil
+          (save-excursion
+            (beginning-of-line)
+            (re-search-forward (checkbox/regexp) (line-end-position))
+            ;; Have checkbox, so toggle
+            (let ((new-marker (or fixed-marker
+                                  (checkbox/next-marker (match-string 0)))))
+              (delete-region (match-beginning 0) (match-end 0))
+              (insert new-marker)))
+        (search-failed
+         ;; No checkbox, so insert
+         (if (derived-mode-p 'prog-mode)
+             ;; prog-mode, so checkbox should be in a comment
+             (if (checkbox/comment-on-line-p)
+                 (save-excursion
+                   (comment-dwim nil)
+                   (checkbox/insert-at-point fixed-marker))
+               (progn
                  (comment-dwim nil)
-                 (checkbox/insert-at-point arg))
-             (progn
-               (comment-dwim nil)
-               (checkbox/insert-at-point arg)))
-         ;; Non-prog-mode, simple case
-         (save-excursion
-           (beginning-of-line)
-           (skip-syntax-forward "^w" (line-end-position))
-           (checkbox/insert-at-point arg)))))))
+                 (checkbox/insert-at-point fixed-marker)))
+           ;; Non-prog-mode, simple case
+           (save-excursion
+             (beginning-of-line)
+             (skip-syntax-forward "^w" (line-end-position))
+             (checkbox/insert-at-point fixed-marker))))))))
 
-(defun checkbox/insert-at-point (&optional marker-idx)
+(defun checkbox/insert-at-point (&optional marker)
   "Insert an unchecked checkbox at point.
-Or, with MARKER-IDX, insert nth marker."
+Or, with MARKER, insert that marker at point."
   (unless (looking-at "^")
     (just-one-space))
-  (insert (checkbox/nth-marker marker-idx) " "))
+  (insert (or marker (checkbox/next-marker)) " "))
 
 (defun checkbox/remove ()
   "Remove checkbox on line, if any."
