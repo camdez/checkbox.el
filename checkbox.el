@@ -171,7 +171,7 @@ Or, with MARKER, insert that marker at point."
           (if (looking-at "^")
               (delete-horizontal-space)
             (just-one-space)))
-      (message "No comment on line"))))
+      (message "No checkbox on line"))))
 
 (defun checkbox/comment-on-line-p ()
   "Return non-nil if there is a comment on the current line."
