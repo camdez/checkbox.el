@@ -88,6 +88,12 @@ First item will be the state for new checkboxes."
   :group 'checkbox
   :type '(repeat string))
 
+(make-variable-buffer-local 'checkbox/markers)
+(put 'checkbox/markers 'safe-local-variable
+     (lambda (v)
+       (and (listp v)
+            (cl-every #'stringp v))))
+
 (defun checkbox/regexp ()
   "Return regexp matching all checkbox types."
   (regexp-opt checkbox/markers))
