@@ -80,6 +80,69 @@ To this:
   (let ((beg (point)))
 ```
 
+If you prefer to use an alternate set of checkboxes, you can do so by
+changing the value of `checkbox/markers`, a buffer-local variable.
+Less advanced users may prefer to do this through the `customize`
+facility:
+
+```
+M-x customize-group RET checkbox RET
+```
+
+Advanced users may prefer to do so via their `.emacs` file:
+
+```elisp
+(require 'checkbox)
+(setq-default checkbox/markers '("TODO" "DONE" "WAITING"))
+```
+
+Additionally, a convenient way to give a file a unique set of checkbox
+markers is via [File Variables][4] (also see the handy
+`add-file-local-variable` function), allowing us to specify the marker
+set we want to use via a small comment near the end of the file. For
+example, in a Markdown file:
+
+```md
+<!-- Local Variables: -->
+<!-- checkbox/markers: ("TODO" "DONE" "WAITING") -->
+<!-- End: -->
+```
+
+Passing a prefix argument to `checkbox/toggle` allows us to directly
+choose a checkbox to insert via its position in `checkbox/markers`,
+which is useful when we have more than two markers.  For example,
+assuming the custom marker set above and a buffer with the following
+contents:
+
+```md
+- Review report<>
+```
+
+`C-u 2 C-c C-t` will yield:
+
+```md
+- WAITING Review report<>
+```
+
+Note that the first marker is 0.
+
+Alternatives
+------------
+
+For a more featureful alternative, check out the amazing
+[org-mode][5].  I love and use org-mode, but org-mode generally
+expects to be running as a major mode whereas checkbox.el will happily
+handle your checkbox needs inside of any mode.
+
+Testing
+-------
+
+To run the full test suite (unit + integration) simply run:
+
+```sh
+$ make
+```
+
 License
 -------
 
@@ -104,3 +167,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 [1]: https://github.com/camdez/checkbox.el
 [2]: https://travis-ci.org/camdez/checkbox.el.svg?branch=master
 [3]: https://travis-ci.org/camdez/checkbox.el
+[4]: https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Variables.html
+[5]: http://orgmode.org
