@@ -143,15 +143,29 @@ With prefix ARG, delete checkbox."
              (if (checkbox/comment-on-line-p)
                  (save-excursion
                    (comment-dwim nil)
+                   (checkbox/skip-prefix-forward)
                    (checkbox/insert-at-point fixed-marker))
                (progn
                  (comment-dwim nil)
+                 (checkbox/skip-prefix-forward)
                  (checkbox/insert-at-point fixed-marker)))
            ;; Non-prog-mode, simple case
            (save-excursion
              (beginning-of-line)
-             (skip-syntax-forward "^w" (line-end-position))
+             (checkbox/skip-prefix-forward)
              (checkbox/insert-at-point fixed-marker))))))))
+
+(defun checkbox/skip-prefix-forward ()
+  "Move forward over any characters checkboxes should follow.
+For example, we might skip '-' characters to facilitate building
+lists like so:
+
+  // - [ ] Item one
+  // - [ ] Item two
+
+ Always invoked when point is at start of line /
+comment contents."
+  (skip-syntax-forward "^w" (line-end-position)))
 
 (defun checkbox/insert-at-point (&optional marker)
   "Insert an unchecked checkbox at point.
