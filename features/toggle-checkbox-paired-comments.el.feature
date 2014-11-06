@@ -5,6 +5,7 @@ Feature: Toggle checkbox in a mode with paired comment markers
 
   Background:
     Given I switch to buffer "checkbox.c"
+    And I turn on c-mode
     And I load the following:
       """
       (c-mode)

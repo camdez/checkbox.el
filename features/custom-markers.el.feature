@@ -1,10 +1,7 @@
 Feature: Using custom markers
   Background:
     Given I switch to buffer "custom-checkbox.txt"
-    And I load the following:
-      """
-      (setq checkbox/markers '("TODO" "DONE" "HOLD"))
-      """
+    And I set checkbox/markers to ("TODO" "DONE" "HOLD")
     And I clear the buffer
     And I insert:
       """

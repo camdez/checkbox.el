@@ -25,10 +25,7 @@ Feature: Skipping prefix characters
       """
       /* - foobar */
       """
-    And I load the following:
-      """
-      (c-mode)
-      """
+    And I turn on c-mode
     And I press "C-c C-t"
     Then I should see:
       """

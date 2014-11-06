@@ -1,11 +1,8 @@
 Feature: Toggle checkbox on line in a programming mode
   Background:
     Given I switch to buffer "checkbox.el"
-    And I load the following:
-      """
-      (emacs-lisp-mode)
-      (setq indent-tabs-mode nil)
-      """
+    And I turn on emacs-lisp-mode
+    And I set indent-tabs-mode to nil
     And I clear the buffer
     And I insert:
       """
