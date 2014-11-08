@@ -82,39 +82,39 @@
   "Quick manipulation of textual checkboxes."
   :group 'convenience)
 
-(defcustom checkbox/markers '("[ ]" "[x]")
+(defcustom checkbox/states '("[ ]" "[x]")
   "Checkbox states to cycle between.
 First item will be the state for new checkboxes."
   :group 'checkbox
   :type '(repeat string))
 
-(make-variable-buffer-local 'checkbox/markers)
-(put 'checkbox/markers 'safe-local-variable
+(make-variable-buffer-local 'checkbox/states)
+(put 'checkbox/states 'safe-local-variable
      (lambda (v)
        (and (listp v)
             (cl-every #'stringp v))))
 
 (defun checkbox/regexp ()
   "Return regexp matching all checkbox types."
-  (regexp-opt checkbox/markers))
+  (regexp-opt checkbox/states))
 
-(defun checkbox/nth-marker (&optional idx wrap)
-  "Return the nth marker (or first without IDX).
-WRAP means module IDX by the number of markers rather than
+(defun checkbox/nth-state (&optional idx wrap)
+  "Return the nth state (or first without IDX).
+WRAP means module IDX by the number of states rather than
 erroring."
   (let* ((idx1 (or idx 0))
          (idx2 (if wrap
-                   (mod idx1 (length checkbox/markers))
+                   (mod idx1 (length checkbox/states))
                  idx1)))
-    (or (nth idx2 checkbox/markers)
-        (error "No such marker"))))
+    (or (nth idx2 checkbox/states)
+        (error "No such state"))))
 
-(defun checkbox/next-marker (&optional old-marker)
-  "Return the marker to cycle to after OLD-MARKER.
-Zero-argument form returns marker to use for new checkboxes."
-  (let* ((old-marker-pos (cl-position old-marker checkbox/markers :test 'string=))
-         (new-marker-pos (when old-marker-pos (1+ old-marker-pos))))
-    (checkbox/nth-marker new-marker-pos t)))
+(defun checkbox/next-state (&optional old-state)
+  "Return the state to cycle to after OLD-STATE.
+Zero-argument form returns state to use for new checkboxes."
+  (let* ((old-state-pos (cl-position old-state checkbox/states :test 'string=))
+         (new-state-pos (when old-state-pos (1+ old-state-pos))))
+    (checkbox/nth-state new-state-pos t)))
 
 (defun checkbox/toggle (&optional arg)
   "Toggle checkbox (\"[ ]\" or \"[x]\") on the current line.
@@ -126,16 +126,16 @@ With prefix ARG, delete checkbox."
   (if (consp arg)
       (checkbox/remove)
     ;; Look this up first so we don't move if invalid
-    (let ((fixed-marker (when arg (checkbox/nth-marker arg))))
+    (let ((fixed-state (when arg (checkbox/nth-state arg))))
       (condition-case nil
           (save-excursion
             (beginning-of-line)
             (re-search-forward (checkbox/regexp) (line-end-position))
             ;; Have checkbox, so toggle
-            (let ((new-marker (or fixed-marker
-                                  (checkbox/next-marker (match-string 0)))))
+            (let ((new-state (or fixed-state
+                                  (checkbox/next-state (match-string 0)))))
               (delete-region (match-beginning 0) (match-end 0))
-              (insert new-marker)))
+              (insert new-state)))
         (search-failed
          ;; No checkbox, so insert
          (if (derived-mode-p 'prog-mode)
@@ -144,16 +144,16 @@ With prefix ARG, delete checkbox."
                  (save-excursion
                    (comment-dwim nil)
                    (checkbox/skip-prefix-forward (checkbox/comment-content-end))
-                   (checkbox/insert-at-point fixed-marker))
+                   (checkbox/insert-at-point fixed-state))
                (progn
                  (comment-dwim nil)
                  (checkbox/skip-prefix-forward)
-                 (checkbox/insert-at-point fixed-marker)))
+                 (checkbox/insert-at-point fixed-state)))
            ;; Non-prog-mode, simple case
            (save-excursion
              (beginning-of-line)
              (checkbox/skip-prefix-forward)
-             (checkbox/insert-at-point fixed-marker))))))))
+             (checkbox/insert-at-point fixed-state))))))))
 
 (defun checkbox/skip-prefix-forward (&optional lim)
   "Move forward over any characters checkboxes should follow.
@@ -176,12 +176,12 @@ Assumes point is within a comment."
     (comment-enter-backward)
     (point)))
 
-(defun checkbox/insert-at-point (&optional marker)
+(defun checkbox/insert-at-point (&optional state)
   "Insert an unchecked checkbox at point.
-Or, with MARKER, insert that marker at point."
+Or, with STATE, insert that state at point."
   (unless (looking-at "^")
     (just-one-space))
-  (insert (or marker (checkbox/next-marker)) " "))
+  (insert (or state (checkbox/next-state)) " "))
 
 (defun checkbox/comment-contents ()
   "Return the contents of (first) comment on current line.

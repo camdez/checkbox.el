@@ -1,7 +1,7 @@
-Feature: Using custom markers
+Feature: Using custom states
   Background:
     Given I switch to buffer "custom-checkbox.txt"
-    And I set checkbox/markers to ("TODO" "DONE" "HOLD")
+    And I set checkbox/states to ("TODO" "DONE" "HOLD")
     And I clear the buffer
     And I insert:
       """

@@ -81,7 +81,7 @@ To this:
 ```
 
 If you prefer to use an alternate set of checkboxes, you can do so by
-changing the value of `checkbox/markers`, a buffer-local variable.
+changing the value of `checkbox/states`, a buffer-local variable.
 Less advanced users may prefer to do this through the `customize`
 facility:
 
@@ -93,25 +93,25 @@ Advanced users may prefer to do so via their `.emacs` file:
 
 ```elisp
 (require 'checkbox)
-(setq-default checkbox/markers '("TODO" "DONE" "WAITING"))
+(setq-default checkbox/states '("TODO" "DONE" "WAITING"))
 ```
 
 Additionally, a convenient way to give a file a unique set of checkbox
-markers is via [File Variables][4] (also see the handy
-`add-file-local-variable` function), allowing us to specify the marker
+states is via [File Variables][4] (also see the handy
+`add-file-local-variable` function), allowing us to specify the state
 set we want to use via a small comment near the end of the file. For
 example, in a Markdown file:
 
 ```md
 <!-- Local Variables: -->
-<!-- checkbox/markers: ("TODO" "DONE" "WAITING") -->
+<!-- checkbox/states: ("TODO" "DONE" "WAITING") -->
 <!-- End: -->
 ```
 
 Passing a prefix argument to `checkbox/toggle` allows us to directly
-choose a checkbox to insert via its position in `checkbox/markers`,
-which is useful when we have more than two markers.  For example,
-assuming the custom marker set above and a buffer with the following
+choose a checkbox to insert via its position in `checkbox/states`,
+which is useful when we have more than two states.  For example,
+assuming the custom state set above and a buffer with the following
 contents:
 
 ```md
@@ -124,7 +124,7 @@ contents:
 - WAITING Review report<>
 ```
 
-Note that the first marker is 0.
+Note that the first state is 0.
 
 Alternatives
 ------------
