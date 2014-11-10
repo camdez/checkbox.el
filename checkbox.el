@@ -36,7 +36,7 @@
 ;;   - [ ] Buy gin<point>
 ;;   - [ ] Buy tonic
 
-;; And you invoke `checkbox/toggle', you'll get the following:
+;; And you invoke `checkbox-toggle', you'll get the following:
 
 ;;   - [x] Buy gin<point>
 ;;   - [ ] Buy tonic

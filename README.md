@@ -12,11 +12,11 @@ Installation
 Download the `checkbox.el` file and add it somewhere in your
 `load-path`.  Then add `(require 'checkbox)` to your `.emacs` file.
 
-I'd recommend globally binding `checkbox/toggle` to a convenient
+I'd recommend globally binding `checkbox-toggle` to a convenient
 keystroke.  For example:
 
 ```elisp
-(global-set-key (kbd "C-c C-t") 'checkbox/toggle)
+(global-set-key (kbd "C-c C-t") 'checkbox-toggle)
 ```
 
 Usage
@@ -30,7 +30,7 @@ like this:
 - [ ] Buy tonic
 ```
 
-And you invoke `checkbox/toggle`, you'll get the following:
+And you invoke `checkbox-toggle`, you'll get the following:
 
 ```md
 - [x] Buy gin<point>
@@ -81,7 +81,7 @@ To this:
 ```
 
 If you prefer to use an alternate set of checkboxes, you can do so by
-changing the value of `checkbox/states`, a buffer-local variable.
+changing the value of `checkbox-states`, a buffer-local variable.
 Less advanced users may prefer to do this through the `customize`
 facility:
 
@@ -93,7 +93,7 @@ Advanced users may prefer to do so via their `.emacs` file:
 
 ```elisp
 (require 'checkbox)
-(setq-default checkbox/states '("TODO" "DONE" "WAITING"))
+(setq-default checkbox-states '("TODO" "DONE" "WAITING"))
 ```
 
 Additionally, a convenient way to give a file a unique set of checkbox
@@ -104,12 +104,12 @@ example, in a Markdown file:
 
 ```md
 <!-- Local Variables: -->
-<!-- checkbox/states: ("TODO" "DONE" "WAITING") -->
+<!-- checkbox-states: ("TODO" "DONE" "WAITING") -->
 <!-- End: -->
 ```
 
-Passing a prefix argument to `checkbox/toggle` allows us to directly
-choose a checkbox to insert via its position in `checkbox/states`,
+Passing a prefix argument to `checkbox-toggle` allows us to directly
+choose a checkbox to insert via its position in `checkbox-states`,
 which is useful when we have more than two states.  For example,
 assuming the custom state set above and a buffer with the following
 contents:
