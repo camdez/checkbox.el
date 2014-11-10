@@ -115,13 +115,13 @@ assuming the custom state set above and a buffer with the following
 contents:
 
 ```md
-- Review report<>
+- Review report<point>
 ```
 
 `C-u 2 C-c C-t` will yield:
 
 ```md
-- WAITING Review report<>
+- WAITING Review report<point>
 ```
 
 Note that the first state is 0.
