@@ -13,14 +13,14 @@ Feature: Toggle checkbox on line in a programming mode
       (setq frob 5)                           ; [x]
       """
     And I go to beginning of buffer
-    And I bind key "C-c C-t" to "checkbox/toggle"
+    And I bind key "C-c C-t" to "checkbox-toggle"
 
   Scenario: Add checkbox
     When I go to word "1"
     And I press "C-c C-t"
     Then I should see:
       """
-      (setq foo 1)                            ; [ ] 
+      (setq foo 1)                            ; [ ]
       """
     And the cursor should be after "[ ] "
 

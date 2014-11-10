@@ -7,7 +7,7 @@ Feature: Skipping prefix characters
     Given I switch to buffer "prefix.txt"
     And I clear the buffer
     And I go to beginning of buffer
-    And I bind key "C-c C-t" to "checkbox/toggle"
+    And I bind key "C-c C-t" to "checkbox-toggle"
 
   Scenario: Leading prefix in text-mode
     When I insert:

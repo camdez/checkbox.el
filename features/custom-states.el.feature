@@ -1,14 +1,14 @@
 Feature: Using custom states
   Background:
     Given I switch to buffer "custom-checkbox.txt"
-    And I set checkbox/states to ("TODO" "DONE" "HOLD")
+    And I set checkbox-states to ("TODO" "DONE" "HOLD")
     And I clear the buffer
     And I insert:
       """
       Line 1
       """
     And I go to beginning of buffer
-    And I bind key "C-c C-t" to "checkbox/toggle"
+    And I bind key "C-c C-t" to "checkbox-toggle"
 
   Scenario: Add checkbox
     When I go to word "1"

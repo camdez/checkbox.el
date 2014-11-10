@@ -9,7 +9,7 @@ Feature: Toggle checkbox on line
       [x] Line 3
       """
     And I go to beginning of buffer
-    And I bind key "C-c C-t" to "checkbox/toggle"
+    And I bind key "C-c C-t" to "checkbox-toggle"
 
   Scenario: Add checkbox
     When I go to word "1"

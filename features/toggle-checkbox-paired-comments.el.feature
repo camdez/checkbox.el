@@ -12,7 +12,7 @@ Feature: Toggle checkbox in a mode with paired comment markers
       """
     And I clear the buffer
     And I go to beginning of buffer
-    And I bind key "C-c C-t" to "checkbox/toggle"
+    And I bind key "C-c C-t" to "checkbox-toggle"
 
   Scenario: Add checkbox to blank comment
     When I insert:
