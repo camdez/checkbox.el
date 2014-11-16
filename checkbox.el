@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014 Cameron Desautels
 
 ;; Author: Cameron Desautels <camdez@gmail.com>
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Keywords: convenience
 ;; Homepage: http://github.com/camdez/checkbox.el
 
