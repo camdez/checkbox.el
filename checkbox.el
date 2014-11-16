@@ -74,6 +74,7 @@
 ;;     (beginning-of-line)                ; [ ] <point>
 ;;     (let ((beg (point)))
 
+
 ;;; Code:
 
 (require 'cl-lib)
@@ -138,22 +139,24 @@ With prefix ARG, delete checkbox."
               (insert new-state)))
         (search-failed
          ;; No checkbox, so insert
-         (if (derived-mode-p 'prog-mode)
-             ;; prog-mode, so checkbox should be in a comment
-             (if (checkbox--comment-on-line-p)
-                 (save-excursion
-                   (comment-dwim nil)
-                   (checkbox-skip-prefix-forward (checkbox--comment-content-end))
-                   (checkbox--insert-at-point fixed-state))
-               (progn
-                 (comment-dwim nil)
-                 (checkbox-skip-prefix-forward)
-                 (checkbox--insert-at-point fixed-state)))
-           ;; Non-prog-mode, simple case
-           (save-excursion
-             (beginning-of-line)
-             (checkbox-skip-prefix-forward)
-             (checkbox--insert-at-point fixed-state))))))))
+         (let ((start-pos (point-marker)))
+           (if (derived-mode-p 'prog-mode)
+               (comment-dwim nil) ; might insert or move, depending
+             (beginning-of-line))
+           (let ((end-pos (if (derived-mode-p 'prog-mode)
+                              (checkbox--comment-content-end)
+                            (line-end-position))))
+             (checkbox--insert-here fixed-state start-pos end-pos))))))))
+
+(defun checkbox--insert-here (state start-pos end-pos)
+  "Insert checkbox with STATE at point. With START-POS, return to
+that position afterwards if it makes sense.  END-POS marks the
+end of the area in which the checkbox is being inserted."
+  (let ((end-pos (copy-marker end-pos t)))
+    (checkbox-skip-prefix-forward end-pos)
+    (checkbox--insert-at-point state)
+    (unless (checkbox--string-blank-p (buffer-substring-no-properties (point) end-pos))
+      (goto-char start-pos))))
 
 (defun checkbox-skip-prefix-forward (&optional lim)
   "Move forward over any characters checkboxes should follow.
@@ -180,7 +183,8 @@ Assumes point is within a comment."
   "Insert an unchecked checkbox at point.
 Or, with STATE, insert that state at point."
   (unless (looking-at "^")
-    (just-one-space))
+    (delete-horizontal-space)
+    (insert " "))
   (insert (or state (checkbox--next-state)) " "))
 
 (defun checkbox--comment-contents ()
