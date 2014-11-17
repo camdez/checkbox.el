@@ -3,7 +3,7 @@
 ;; Copyright (C) 2014 Cameron Desautels
 
 ;; Author: Cameron Desautels <camdez@gmail.com>
-;; Version: 0.2.0
+;; Version: 0.2.1
 ;; Package-Requires: ((emacs "24") (cl-lib "0.5"))
 ;; Keywords: convenience
 ;; Homepage: http://github.com/camdez/checkbox.el
