@@ -4,6 +4,7 @@
 
 ;; Author: Cameron Desautels <camdez@gmail.com>
 ;; Version: 0.2.0
+;; Package-Requires: ((emacs "24") (cl-lib "0.5"))
 ;; Keywords: convenience
 ;; Homepage: http://github.com/camdez/checkbox.el
 
