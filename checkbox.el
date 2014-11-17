@@ -118,6 +118,7 @@ Zero-argument form returns state to use for new checkboxes."
          (new-state-pos (when old-state-pos (1+ old-state-pos))))
     (checkbox--nth-state new-state-pos t)))
 
+;;;###autoload
 (defun checkbox-toggle (&optional arg)
   "Toggle checkbox (\"[ ]\" or \"[x]\") on the current line.
 If checkbox does not exist, an empty checkbox will be inserted
