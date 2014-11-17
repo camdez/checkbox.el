@@ -1,6 +1,6 @@
 # [checkbox.el][1]
 
-[![Build status][2]][3]
+[![Build status][2]][3] [![MELPA][7]][8] [![MELPA Stable][9]][10]
 
 A tiny library for working with textual checkboxes in Emacs buffers.
 Use it to keep grocery lists in text files, feature requests in source
@@ -9,8 +9,19 @@ files, or task lists on GitHub PRs.
 Installation
 ------------
 
-Download the `checkbox.el` file and add it somewhere in your
-`load-path`.  Then add `(require 'checkbox)` to your `.emacs` file.
+The recommended method of installation is via `package.el`.  If you
+haven't previously added [MELPA][6] as a package source, add the
+following to your `.emacs` and either evaluate it or restart Emacs:
+
+```elisp
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+```
+
+With that in place you can simply run `M-x package-install RET
+checkbox RET` to download and install the package.
 
 I'd recommend globally binding `checkbox-toggle` to a convenient
 keystroke.  For example:
@@ -169,3 +180,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 [3]: https://travis-ci.org/camdez/checkbox.el
 [4]: https://www.gnu.org/software/emacs/manual/html_node/emacs/File-Variables.html
 [5]: http://orgmode.org
+[6]: http://melpa.org
+[7]: http://melpa.org/packages/checkbox-badge.svg
+[8]: http://melpa.org/#/checkbox
+[9]: http://stable.melpa.org/packages/checkbox-badge.svg
+[10]: http://stable.melpa.org/#/checkbox
