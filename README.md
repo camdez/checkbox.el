@@ -10,8 +10,9 @@ Installation
 ------------
 
 The recommended method of installation is via `package.el`.  If you
-haven't previously added [MELPA][6] as a package source, add the
-following to your `.emacs` and either evaluate it or restart Emacs:
+haven't previously added [MELPA][6] (or [Marmalade][11]) as a package
+source, add the following to your `.emacs` and either evaluate it or
+restart Emacs:
 
 ```elisp
 (require 'package)
@@ -185,3 +186,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 [8]: http://melpa.org/#/checkbox
 [9]: http://stable.melpa.org/packages/checkbox-badge.svg
 [10]: http://stable.melpa.org/#/checkbox
+[11]: https://marmalade-repo.org/packages/checkbox
